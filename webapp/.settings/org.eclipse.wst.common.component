@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="wineshop-admin-webapp">
+        <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/wineshop-admin-java/wineshop-admin-java">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/wineshop-admin-flex/wineshop-admin-flex">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="wineshop-admin-webapp"/>
+        <property name="java-output-path" value="/wineshop-admin-webapp/target/classes"/>
+    </wb-module>
+</project-modules>
