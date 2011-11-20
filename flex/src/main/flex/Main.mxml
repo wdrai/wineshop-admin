@@ -31,7 +31,12 @@
    	
     <fx:Script>
         <![CDATA[
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			
 			import org.granite.tide.data.DataObserver;
+			import org.granite.tide.data.OptimisticLockExceptionHandler;
+			import org.granite.tide.data.events.TideDataConflictsEvent;
 			import org.granite.tide.service.DefaultServiceInitializer;
 			import org.granite.tide.spring.Identity;
 			import org.granite.tide.spring.Spring;
@@ -53,6 +58,11 @@
 				// Register exception handler for validation
 				Spring.getInstance().addExceptionHandler(ValidatorExceptionHandler);
 				
+				// Register exception handler for optimistic locking
+				Spring.getInstance().addExceptionHandler(OptimisticLockExceptionHandler);
+
+				Spring.getInstance().getSpringContext().addEventListener(TideDataConflictsEvent.DATA_CONFLICTS, conflictsHandler);
+
                 // Check current authentication state
                 identity.isLoggedIn();
             }
@@ -68,6 +78,18 @@
                 removeElementAt(0);
                 addElement(new Login());
             }
+			
+			
+			private function conflictsHandler(event:TideDataConflictsEvent):void {
+				Alert.show("Someone has modified this vineyard at the same time as you.\nDo you want to keep your changes?", 
+					"Conflict", Alert.YES | Alert.NO, null, function(ce:CloseEvent):void {
+						if (ce.detail == Alert.YES)
+							event.conflicts.acceptAllClient();
+						else
+							event.conflicts.acceptAllServer();
+					}
+				);
+			}
         ]]>
     </fx:Script>
 
