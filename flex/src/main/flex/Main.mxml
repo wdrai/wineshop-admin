@@ -31,10 +31,11 @@
    	
     <fx:Script>
         <![CDATA[
-            import org.granite.tide.spring.Spring;
-            import org.granite.tide.spring.Identity;
-            import org.granite.tide.service.DefaultServiceInitializer;
-            import org.granite.tide.data.DataObserver;
+			import org.granite.tide.data.DataObserver;
+			import org.granite.tide.service.DefaultServiceInitializer;
+			import org.granite.tide.spring.Identity;
+			import org.granite.tide.spring.Spring;
+			import org.granite.tide.validators.ValidatorExceptionHandler;
             
             [Bindable] [Inject]
             public var identity:Identity;
@@ -49,6 +50,9 @@
                 Spring.getInstance().addEventObserver("org.granite.tide.login", "welcomeTopic", "subscribe");
                 Spring.getInstance().addEventObserver("org.granite.tide.logout", "welcomeTopic", "unsubscribe");
                 
+				// Register exception handler for validation
+				Spring.getInstance().addExceptionHandler(ValidatorExceptionHandler);
+				
                 // Check current authentication state
                 identity.isLoggedIn();
             }

@@ -6,6 +6,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Vineyard extends AbstractEntity {
@@ -14,9 +16,11 @@ public class Vineyard extends AbstractEntity {
 	
 
     @Basic
+    @Size(min=5, max=100, message="The name must be between {min} and {max} characters")
     private String name;
     
     @OneToMany(cascade=CascadeType.ALL, mappedBy="vineyard", orphanRemoval=true)
+    @Valid
     private Set<Wine> wines;
 
 	public String getName() {

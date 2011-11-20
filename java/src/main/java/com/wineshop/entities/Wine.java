@@ -5,6 +5,10 @@ import javax.persistence.Basic;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 @Entity
@@ -22,12 +26,16 @@ public class Wine extends AbstractEntity {
 	private Vineyard vineyard;
 	
     @Basic
+    @Size(min=5, max=100, message="The name must be between {min} and {max} characters")
     private String name;
 
     @Basic
+    @Min(value=1900, message="The year must be greater than {value}")
+    @Max(value=2050, message="The year must be less than {value}")
     private Integer year;
     
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Type type;
 
     

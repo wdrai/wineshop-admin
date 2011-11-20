@@ -62,7 +62,8 @@
             public var wineshopService:WineshopService;
 			
 			private function save():void {
-				wineshopService.save(vineyard);
+				if (formValidator.validateEntity())
+					wineshopService.save(vineyard);
 			}
 			
 			private function remove():void {
@@ -83,6 +84,8 @@
 		<e:Vineyard id="vineyard"/>
 		
 		<s:ArrayCollection id="wineTypes" source="{Wine$Type.constants}"/>
+		
+		<v:FormValidator id="formValidator" entity="{vineyard}" form="{formVineyard}"/>
 	</fx:Declarations>
     
 	<s:VGroup paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10" width="800">
@@ -111,6 +114,10 @@
 						<s:itemRenderer>
 							<fx:Component>
 								<s:ItemRenderer>
+									<fx:Declarations>
+										<v:FormValidator id="wineValidator" form="{wineEdit}" entity="{data}"/>
+									</fx:Declarations>
+									
 									<s:states>
 										<s:State name="normal"/>
 									</s:states>                   
