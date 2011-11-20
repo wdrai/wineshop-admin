@@ -46,9 +46,9 @@
                 
                 // Configuration for data push observer subscribed upon login/logout
                 // Remove if not using DataObserver
-                Spring.getInstance().addComponent("welcomeTopic", DataObserver);
-                Spring.getInstance().addEventObserver("org.granite.tide.login", "welcomeTopic", "subscribe");
-                Spring.getInstance().addEventObserver("org.granite.tide.logout", "welcomeTopic", "unsubscribe");
+                Spring.getInstance().addComponent("wineshopTopic", DataObserver);
+                Spring.getInstance().addEventObserver("org.granite.tide.login", "wineshopTopic", "subscribe");
+                Spring.getInstance().addEventObserver("org.granite.tide.logout", "wineshopTopic", "unsubscribe");
                 
 				// Register exception handler for validation
 				Spring.getInstance().addExceptionHandler(ValidatorExceptionHandler);

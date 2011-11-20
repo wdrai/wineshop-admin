@@ -45,7 +45,7 @@
     <graniteds:flex-filter url-pattern="/*" tide="true"/>
     
     <!-- Simple messaging destination for data push -->
-    <graniteds:messaging-destination id="welcomeTopic" no-local="true" session-selector="true"/>
+    <graniteds:messaging-destination id="wineshopTopic" no-local="true" session-selector="true"/>
     
     <bean id="tideValidator" class="org.granite.tide.validation.BeanValidation"/>
     
