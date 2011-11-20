@@ -98,6 +98,32 @@
 			<s:FormItem label="Name">
 				<s:TextInput id="formName" text="@{vineyard.name}"/>
 			</s:FormItem>
+			<s:FormItem label="Wines">
+				<s:HGroup gap="10">
+					<s:List id="formWines" dataProvider="{vineyard.wines}">
+						<s:itemRenderer>
+							<fx:Component>
+								<s:ItemRenderer>
+									<s:states>
+										<s:State name="normal"/>
+									</s:states>                   
+									<s:HGroup id="wineEdit">
+										<s:TextInput text="@{data.name}"/>
+										<s:TextInput text="@{data.year}"/>
+										<s:DropDownList selectedItem="@{data.type}" requireSelection="true" 
+														dataProvider="{outerDocument.wineTypes}" labelField="name"/>
+									</s:HGroup>
+								</s:ItemRenderer>							
+							</fx:Component>
+						</s:itemRenderer>					
+					</s:List>				
+					
+					<s:VGroup gap="10">
+						<s:Button label="+" click="vineyard.wines.addItem(new Wine(vineyard))"/>
+						<s:Button label="-" enabled="{Boolean(formWines.selectedItem)}" click="vineyard.wines.removeItemAt(formWines.selectedIndex)"/>
+					</s:VGroup>
+				</s:HGroup>
+			</s:FormItem>
 			<s:FormItem>
 				<s:HGroup>
 					<s:Button id="saveVineyard" label="Save"
