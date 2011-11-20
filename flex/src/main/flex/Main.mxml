@@ -36,6 +36,7 @@
 			
 			import org.granite.tide.data.DataObserver;
 			import org.granite.tide.data.OptimisticLockExceptionHandler;
+			import org.granite.tide.data.UninitializeArgumentPreprocessor;
 			import org.granite.tide.data.events.TideDataConflictsEvent;
 			import org.granite.tide.service.DefaultServiceInitializer;
 			import org.granite.tide.spring.Identity;
@@ -54,7 +55,7 @@
                 Spring.getInstance().addComponent("wineshopTopic", DataObserver);
                 Spring.getInstance().addEventObserver("org.granite.tide.login", "wineshopTopic", "subscribe");
                 Spring.getInstance().addEventObserver("org.granite.tide.logout", "wineshopTopic", "unsubscribe");
-                
+				
 				// Register exception handler for validation
 				Spring.getInstance().addExceptionHandler(ValidatorExceptionHandler);
 				
@@ -62,6 +63,9 @@
 				Spring.getInstance().addExceptionHandler(OptimisticLockExceptionHandler);
 
 				Spring.getInstance().getSpringContext().addEventListener(TideDataConflictsEvent.DATA_CONFLICTS, conflictsHandler);
+				
+				// Register reverse lazy argument preprocessor
+				Spring.getInstance().addComponents([UninitializeArgumentPreprocessor]);
 
                 // Check current authentication state
                 identity.isLoggedIn();
