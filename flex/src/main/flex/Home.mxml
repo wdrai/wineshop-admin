@@ -25,6 +25,7 @@
 	xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:mx="library://ns.adobe.com/flex/mx"
     xmlns:v="org.granite.validation.*"
+	xmlns:e="com.wineshop.entities.*"
     xmlns="*"
     width="100%" height="100%">
 
@@ -34,51 +35,78 @@
         <![CDATA[
             import mx.collections.ArrayCollection;
             
+			import org.granite.tide.spring.Spring;
+			import org.granite.tide.collections.PagedQuery;
             import org.granite.tide.events.TideResultEvent;
             import org.granite.tide.events.TideFaultEvent;
             
-            import com.wineshop.entities.Welcome;
-            import com.wineshop.services.WelcomeService;
-            
+            import com.wineshop.entities.Vineyard;
+			import com.wineshop.entities.Wine;
+			import com.wineshop.entities.Wine$Type;
+            import com.wineshop.services.WineshopService;
+
+			Spring.getInstance().addComponentWithFactory("vineyards", PagedQuery, 
+				{ filterClass: Vineyard, elementClass: Vineyard, remoteComponentClass: WineshopService, methodName: "list", maxResults: 12 }
+			);
+			
+			[In] [Bindable]
+			public var vineyards:PagedQuery;
+			
             [Inject]
-            public var welcomeService:WelcomeService;
-            
-            [Bindable]
-            public var allWelcomes:ArrayCollection;
-            
-            private function findAllResult(event:TideResultEvent):void {
-                allWelcomes = ArrayCollection(event.result);
-            }
-            
-            [Observer("org.granite.tide.data.persist.Welcome")]
-            public function welcomeAdded(welcome:Welcome):void {
-                allWelcomes.addItem(welcome);
-            }
-            
-            private function hello(name:String):void {
-                welcomeService.hello(iName.text, helloResult, helloFault)
-            }
-            
-            private function helloResult(event:TideResultEvent):void {
-                iName.text = "";
-            }
-            
-            private function helloFault(event:TideFaultEvent):void {
-                lMessage.text = event.fault.faultString;
-            }
+            public var wineshopService:WineshopService;
+			
+			private function save():void {
+				wineshopService.save(vineyard);
+			}
+			
+			private function remove():void {
+				wineshopService.remove(vineyard.id, function(event:TideResultEvent):void {
+					selectVineyard(null);
+				});
+			}
+			
+			private function selectVineyard(vineyard:Vineyard):void {
+				this.vineyard = vineyard;
+				vineyardsList.selectedItem = vineyard;
+			}
         ]]>
     </fx:Script>
+	
+	<fx:Declarations>		
+		<e:Vineyard id="vineyard"/>
+		
+		<s:ArrayCollection id="wineTypes" source="{Wine$Type.constants}"/>
+	</fx:Declarations>
     
-    <s:VGroup paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10" width="800">
-        <s:HGroup id="fHello">
-            <s:TextInput id="iName"/>
-            <s:Button id="bHello" label="Welcome!" click="hello(iName.text)"/>
-        </s:HGroup>
-    
-        <s:Label id="lMessage"/>
-        
-        <s:List id="dgList" dataProvider="{allWelcomes}" labelField="message" width="100%" height="200"
-            creationComplete="welcomeService.findAll(findAllResult)"/>
-    </s:VGroup>
+	<s:VGroup paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10" width="800">
+		<s:HGroup id="filter">
+			<s:TextInput id="filterName" text="@{vineyards.filter.name}"/>
+			<s:Button id="search" label="Search" click="vineyards.refresh()"/>
+		</s:HGroup>
+		
+		<s:List id="vineyardsList" labelField="name" width="100%" height="200"
+				change="selectVineyard(vineyardsList.selectedItem)">
+			<s:dataProvider><s:AsyncListView list="{vineyards}"/></s:dataProvider>
+		</s:List>
+		
+		<s:Button id="newVineyard" label="New" click="selectVineyard(new Vineyard())"/>
+	</s:VGroup>
+	
+	<s:VGroup paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10" width="800">
+		<s:Form id="formVineyard">
+			<s:FormHeading label="{isNaN(vineyard.id) ? 'Create vineyard' : 'Edit vineyard'}"/>			
+			<s:FormItem label="Name">
+				<s:TextInput id="formName" text="@{vineyard.name}"/>
+			</s:FormItem>
+			<s:FormItem>
+				<s:HGroup>
+					<s:Button id="saveVineyard" label="Save"
+							  click="save()"/>					
+					<s:Button id="removeVineyard" label="Remove"
+							  enabled="{!isNaN(vineyard.id)}" click="remove()"/>
+				</s:HGroup>
+			</s:FormItem>
+		</s:Form>
+	</s:VGroup>
 
 </s:VGroup>
